@@ -1046,8 +1046,9 @@ std::vector<ADCPulse> PhaseIIADCHitFinder::find_pulses_bythreshold(
           // New approach to hit timing to avoid 2ns bins - 50% threshold above baseline
           // Look for where the ADC value crosses 50% of the maximum, assign hit time
           // TODO: consider using an approach recommended by Bob: get time at 50%, get time at 20%, draw straight line in between and find time to zero threshold
+		  double pulse_baseline = calibrated_minibuffer_data.GetBaseline();
           const double threshold_percentage = 0.5;
-          unsigned short threshold_value = ((max_ADC - adc_threshold) * threshold_percentage) + adc_threshold;
+          unsigned short threshold_value = ((max_ADC - pulse_baseline) * threshold_percentage) + pulse_baseline;
           double hit_time = peak_sample;
           bool hit_time_found = false;
 
@@ -1078,7 +1079,6 @@ std::vector<ADCPulse> PhaseIIADCHitFinder::find_pulses_bythreshold(
         std::vector<double> trace_y;
 
         double pulse_start_time = pulse_start_sample * NS_PER_ADC_SAMPLE;
-        double pulse_baseline = calibrated_minibuffer_data.GetBaseline();
 
         for (size_t p = pulse_start_sample; p <= pulse_end_sample; ++p) {
             double ns_time = p * NS_PER_ADC_SAMPLE;
